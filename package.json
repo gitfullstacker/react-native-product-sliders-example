@@ -1,6 +1,6 @@
 {
-  "name": "ProductSlidersExample",
-  "version": "0.0.1",
+  "name": "react-native-product-sliders-example",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "react-native-product-sliders": "file:..",
     "react": "19.0.0",
     "react-native": "0.79.2"
   },

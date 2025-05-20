@@ -1,130 +1,210 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
+import Slider from '../../src/components/Slider';
+import RangeSlider from '../../src/components/RangeSlider';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the recommendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
+const App = () => {
+  const [sliderValue, setSliderValue] = useState(50);
+  const [rangeValue, setRangeValue] = useState({low: 20, high: 80});
+  const [labelPosition, setLabelPosition] = useState<'top' | 'bottom'>('top');
 
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.title}>React Native Product Sliders</Text>
+
+        {/* Label Position Toggle */}
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleText}>Label Position:</Text>
+          <Text
+            style={[
+              styles.toggleButton,
+              labelPosition === 'top' && styles.activeToggle,
+            ]}
+            onPress={() => setLabelPosition('top')}>
+            Top
+          </Text>
+          <Text
+            style={[
+              styles.toggleButton,
+              labelPosition === 'bottom' && styles.activeToggle,
+            ]}
+            onPress={() => setLabelPosition('bottom')}>
+            Bottom
+          </Text>
         </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+
+        {/* Slider with Top/Bottom Label */}
+        <View style={styles.sliderContainer}>
+          <Text style={styles.sliderTitle}>
+            Slider with {labelPosition} Label
+          </Text>
+          <Slider
+            min={0}
+            max={100}
+            value={sliderValue}
+            onValueChange={setSliderValue}
+            labelPosition={labelPosition}
+            renderLabel={value => (
+              <View
+                style={[
+                  styles.label,
+                  labelPosition === 'bottom' && styles.labelBottom,
+                ]}>
+                <Text style={styles.labelText}>{value}</Text>
+              </View>
+            )}
+          />
+        </View>
+
+        {/* Range Slider with Top/Bottom Labels */}
+        <View style={styles.sliderContainer}>
+          <Text style={styles.sliderTitle}>
+            Range Slider with {labelPosition} Labels
+          </Text>
+          <RangeSlider
+            min={0}
+            max={100}
+            lowValue={rangeValue.low}
+            highValue={rangeValue.high}
+            onRangeChange={(low, high) => setRangeValue({low, high})}
+            labelPosition={labelPosition}
+            renderLabel={value => (
+              <View
+                style={[
+                  styles.rangeLabel,
+                  labelPosition === 'bottom'
+                    ? styles.labelBottom
+                    : styles.labelTop,
+                ]}>
+                <Text style={styles.rangeLabelText}>{value}</Text>
+              </View>
+            )}
+          />
+        </View>
+
+        {/* Slider with Different Label Positions */}
+        <View style={styles.sliderContainer}>
+          <Text style={styles.sliderTitle}>
+            Slider with Mixed Label Positions
+          </Text>
+          <Slider
+            min={0}
+            max={100}
+            value={sliderValue}
+            onValueChange={setSliderValue}
+            labelPosition="top"
+            renderLabel={value => (
+              <View style={styles.label}>
+                <Text style={styles.labelText}>Top: {value}</Text>
+              </View>
+            )}
+          />
+          <View style={{height: 30}} />
+          <Slider
+            min={0}
+            max={100}
+            value={sliderValue}
+            onValueChange={setSliderValue}
+            labelPosition="bottom"
+            renderLabel={value => (
+              <View style={[styles.label, styles.labelBottom]}>
+                <Text style={styles.labelText}>Bottom: {value}</Text>
+              </View>
+            )}
+          />
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
   },
-  sectionTitle: {
+  scrollContainer: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  title: {
     fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 8,
+  },
+  toggleText: {
+    marginRight: 10,
+    color: '#666',
+  },
+  toggleButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
+    backgroundColor: '#eee',
+    borderRadius: 4,
+    color: '#333',
+  },
+  activeToggle: {
+    backgroundColor: '#2f80ed',
+    color: 'white',
+  },
+  sliderContainer: {
+    marginBottom: 30,
+    padding: 15,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sliderTitle: {
+    fontSize: 16,
     fontWeight: '600',
+    marginBottom: 15,
+    color: '#444',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  label: {
+    backgroundColor: '#2f80ed',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    position: 'absolute',
+    top: 5,
+    left: -10,
   },
-  highlight: {
-    fontWeight: '700',
+  labelTop: {
+    top: 10,
+  },
+  labelBottom: {
+    top: 0,
+  },
+  labelText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  rangeLabel: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 3,
+    position: 'absolute',
+  },
+  rangeLabelText: {
+    color: 'white',
+    fontSize: 10,
   },
 });
 
