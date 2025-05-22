@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
-import Slider from '../../src/components/Slider';
-import RangeSlider from '../../src/components/RangeSlider';
+import Slider from '../src/components/Slider';
+import RangeSlider from '../src/components/RangeSlider';
 
 const App = () => {
   const [sliderValue, setSliderValue] = useState(50);
